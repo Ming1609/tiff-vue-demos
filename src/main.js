@@ -4,6 +4,8 @@ import App from './App'
 import router from './router'
 import fastclick from 'fastclick'
 
+import 'common/stylus/index.styl'
+
 fastclick.attach(document.body)
 // 解决所有div点击延迟3秒的问题
 
