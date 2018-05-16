@@ -54,11 +54,14 @@ export default {
     }, 20)
 
     window.addEventListener('resize', () => {
+    	// 监听视图变化，如果还没初始化就不做任何操作，重新去计算宽度
       if (!this.slider) {
         return
       }
       this._setSliderWidth(true)
+      // 重新计算一次
       this.slider.refresh()
+      // 宽度发生变化时，就去刷新
     })
   },
   activated() {
@@ -70,6 +73,7 @@ export default {
     clearTimeout(this.timer)
   },
   beforeDestroy() {
+  	// 路由被切换到其他页的时候，清掉轮播slider定时器，有利于释放内存。
     clearTimeout(this.timer)
   },
   
@@ -135,7 +139,7 @@ export default {
       })
     },   
     _initDots() {
-      // 初始化dots小点，就是一个长度为this.children.length的数组
+      // 初始化dots小点，就是一个长度为this.children.length的空数组
       this.dots = new Array(this.children.length)
     },
     _play() {
