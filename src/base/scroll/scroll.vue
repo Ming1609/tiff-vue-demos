@@ -54,7 +54,8 @@ export default{
           probeType: this.probeType,
           click: this.click
         })
-
+		
+        //监听滚动，将子组件的scroll事件以及参数$emit派发传给父组件，
         if (this.listenScroll) {
           let me = this
           this.scroll.on('scroll', (pos) => {
@@ -86,7 +87,9 @@ export default{
         this.scroll && this.scroll.refresh()
       },
       scrollTo() {
+      	// 滚动到相应的位置，this.scroll指向better-scroll的实例
         this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+        // 因为scrollTo()会接受一些参数，所以要用apply(this.scroll, arguments)将这些参数传给better-scroll的参数里
       },
       scrollToElement() {
         this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)

@@ -19,6 +19,7 @@ export function addClass(el, className) {
 }
 
 export function getData(el, name, val) {
+	// 获取data-xx属性，有val值则set，无则get
   const prefix = 'data-'
   if (val) {
     return el.setAttribute(prefix + name, val)
