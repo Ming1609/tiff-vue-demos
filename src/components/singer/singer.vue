@@ -1,7 +1,10 @@
 <template>
   <div class="singer" ref="singer">
-    <list-view :data="singers" ref="list"></list-view>
+    <list-view :data="singers" ref="list" @select="selectSinger"></list-view>
     <!--:data="singers"给list-view组件的data传入的值是singers-->
+    <!--@select监听listview组件 emit传过来的点击事件-->
+    <router-view></router-view>
+    <!--挂载子路由singer-detail-->
   </div>
 </template>
 
@@ -10,6 +13,9 @@
   import {getSingerList} from 'api/singer'
   import {ERR_OK} from 'api/config'
   import Singer from 'common/js/singer'
+  
+  import {mapMutations} from 'vuex'
+  // vuex提供的语法糖
 
   const HOT_SINGER_LEN = 10
   const HOT_NAME = '热门'
@@ -24,7 +30,17 @@
       this._getSingerList()
     },
     methods: {
-      _getSingerList() {
+    	//当你点击 <router-link> 时，这个方法会在内部调用，点击 (声明式)<router-link :to="..."> 等同于调用 (编程式)router.push(...)
+     selectSinger(singer) {
+     	this.$router.push({
+     		path:`/singer/${singer.id}`
+     		// 注意是反引号
+     	})
+     	this.setSinger(singer)
+     	// 实现了mutation的提交
+     },
+     
+     _getSingerList() {
         getSingerList().then((res) => {
           if (res.code === ERR_OK) {
             this.singers = this._normalizeSinger(res.data.list)
@@ -82,7 +98,15 @@
         })
         // 连接数组
         return hot.concat(ret)
-      }
+      },
+      
+      //点击歌手列表，进入歌手详情页.获取当前点击的元素。使用Vuex状态管理。
+      //在methods里，因为mapActions/mapMutations是把action/mutation函数做一个映射，绑定到你的methods里了;
+      //你调methods里的方法的时候照常传参就可以了。
+      ...mapMutations({
+        setSinger: 'SET_SINGER'
+        // setSinger为方法名
+      })
     },
     components: {
       ListView

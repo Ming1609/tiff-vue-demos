@@ -13,7 +13,8 @@
       <li v-for="group in data" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <uL>
-          <li v-for="item in group.items" class="list-group-item">
+          <li @click="selectItem(item)" v-for="item in group.items" class="list-group-item">
+          	<!--@click="selectItem(item)"监听点击事件，emit给singer组件，用作跳转到singerDetail的路由参数-->
             <img class="avatar" v-lazy="item.avatar">
             <span class="name">{{item.name}}</span>
           </li>
@@ -73,6 +74,7 @@
       },
       fixedTitle() {
         if (this.scrollY > 0) {
+        	// 此时是拖到顶部时就不显示fixedTitle
           return ''
         }
         return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
@@ -103,6 +105,7 @@
         this.touch.anchorIndex = anchorIndex
         this._scrollTo(anchorIndex)
       },
+      
       // 右侧边栏快速定位列表滑动
       onShortcutTouchMove(e) {
         let firstTouch = e.touches[0]
@@ -124,7 +127,7 @@
         this.scrollY = pos.y
       },
       
-      // 计算每个group的高度
+      // 计算每个group区块的高度，用数组listHeight存放，比区块多一个数据
       _calculateHeight() {
         this.listHeight = []
         const list = this.$refs.listGroup
@@ -136,6 +139,7 @@
           this.listHeight.push(height)
         }
       },
+      
       // 处理滑动时,index边界的情况
       _scrollTo(index) {
       	// null时,不操作
@@ -151,6 +155,10 @@
         }
         this.scrollY = -this.listHeight[index]
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
+      },
+      
+      selectItem(item) {
+      	this.$emit('select', item)
       }
     },
     
@@ -179,12 +187,14 @@
           	// newY向上滑是负值,所以-newY是正.
             this.currentIndex = i
             this.diff = height2 + newY
+            // 上限值height2,newY为滚动的值,是负值,diff相当于:区块上限-滚过的距离
             return
           }
         }
         // 当滚动到底部，且-newY大于最后一个元素的上限
         this.currentIndex = listHeight.length - 2
       },
+      
       // 区块的上限与滚动距离的差距,设置fixtitle的向上偏移(分组标题顶上去的效果)
       diff(newVal) {
         let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0

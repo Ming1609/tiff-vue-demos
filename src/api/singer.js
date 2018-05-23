@@ -18,6 +18,7 @@ export function getSingerList() {
 }
 
 export function getSingerDetail(singerId) {
+	// 依据歌手id去抓取详情页的数据
   const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg'
 
   const data = Object.assign({}, commonParams, {
